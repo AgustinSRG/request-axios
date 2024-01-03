@@ -349,7 +349,11 @@ export class Request<Return_Type = any, Error_Handler = never> {
             if (!this.aborted) {
                 callback && callback();
             }
-            this._onSuccess && this._onSuccess(response.data)
+            try {
+                this._onSuccess && this._onSuccess(response.data)
+            } catch (ex) {
+                this._onUnexpectedError && this._onUnexpectedError(ex);
+            }
         }).catch(thrown => {
             if (!this.aborted) {
                 callback && callback();
@@ -357,10 +361,14 @@ export class Request<Return_Type = any, Error_Handler = never> {
             if (axios.isCancel(thrown)) {
                 this._onCancel && this._onCancel();
             } else if (axios.isAxiosError(thrown)) {
-                this._onRequestError && this._onRequestError({
-                    status: thrown.response.status,
-                    body: (typeof thrown.response.data === "string") ? thrown.response.data : JSON.stringify(thrown.response.data),
-                }, this.handleError);
+                try {
+                    this._onRequestError && this._onRequestError({
+                        status: thrown.response ? thrown.response.status : 0,
+                        body: thrown.response ? ((typeof thrown.response.data === "string") ? thrown.response.data : JSON.stringify(thrown.response.data)): "",
+                    }, this.handleError);
+                } catch (ex) {
+                    this._onUnexpectedError && this._onUnexpectedError(ex);
+                }
             } else {
                 this._onUnexpectedError && this._onUnexpectedError(thrown);
             }
