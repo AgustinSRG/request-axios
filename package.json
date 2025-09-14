@@ -1,6 +1,6 @@
 {
   "name": "@asanrom/request-axios",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Simple library to make API requests from the frontend.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -45,6 +45,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "axios": "1.8.3"
+    "axios": "1.12.2"
   }
 }
